@@ -16,7 +16,7 @@
 
 <br/>
 
-![Project Architecture](docs/Project_Vajram_thumbnail.jpg)
+![Project Architecture](docs/Project_VAJRAM_thumbnail.jpg)
 
 </div>
 
