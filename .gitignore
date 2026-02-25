@@ -1,3 +1,5 @@
 /ajja_details
 /data
 /vajram_env
+/agent_codes/models
+push_to_hub.py

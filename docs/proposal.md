@@ -1,8 +1,7 @@
-# Project VAJRAM
-### **V**irtual **A**gent for **J**oint **R**isk **A**nalysis of **M**ultiple Myeloma
 
 ## 1. Executive Summary
-Project VAJRAM is a specialized, agentic AI solution designed to democratize advanced care for **Multiple Myeloma (MM)**, bridging the critical gap between sophisticated oncological diagnostics and resource-constrained healthcare environments. By synergizing Google's SOTA medical foundation model - **MedGemma** (for clinical reasoning), **MedGemma 1.5** (for multimodal understanding), and **Med-SigLIP** (for high-fidelity medical imaging analysis) - VAJRAM functions as an end-to-end digital oncologist. It autonomously ingests and synthesizes fragmented patient data, including paper-based medical history, complex radiological scans, and longitudinal behavioral markers, transforming raw multimodal inputs into actionable, life-saving clinical insights for early detection and personalized management.
+Project **VAJRAM**( **V**irtual **A**gent for **J**oint **R**isk **A**ssessment of **M**ultiple Myeloma) is a specialized, agentic AI solution designed to democratize advanced care for **Multiple Myeloma (MM)** patients, bridging the critical gap between sophisticated oncological diagnostics and resource-constrained healthcare environments. By synergizing Google's SOTA medical foundation model - **MedGemma 1.5** (for multimodal understanding) - VAJRAM functions as an end-to-end digital oncologist. It autonomously ingests and synthesizes fragmented patient data, including paper-based medical history, complex radiological scans, and longitudinal behavioral markers, transforming raw multimodal inputs into actionable, life-saving clinical insights for early detection and personalized management.
+
 
 ## 2. Problem Statement
 Multiple Myeloma is the 2nd most common hematological malignancy and a complex blood cancer that is currently incurable but highly treatable. However, in most of the cases, patient outcomes are compromised by:
@@ -12,8 +11,6 @@ Multiple Myeloma is the 2nd most common hematological malignancy and a complex b
 * **The Knowledge Translation Gap:** The treatment paradigm for Multiple Myeloma is exceptionally complex. General physicians and rural oncologists often struggle to navigate dense, rapidly changing clinical guidelines (NCCN/ESMO), leading to suboptimal, generalized therapeutic choices for Relapsed/Refractory (RRMM) patients.
 
 ## 3. Proposed Solution: The 5-Pillar Architecture
-
-![5-Pillar Architecture](Project_VAJRAM_thumbnail_resized.jpg)
 
 ### Module 1: Intelligent Digitization (The "Digital Twin")
 * **Function:** Users scan paper lab reports, handwritten prescriptions, and X-ray films via smartphone camera.
@@ -40,10 +37,20 @@ Multiple Myeloma is the 2nd most common hematological malignancy and a complex b
 * **AI Technology:** **Agentic RAG (Retrieval-Augmented Generation):** The base MedGemma 1.5 model queries a custom vector database embedded with the latest NCCN and ESMO clinical guidelines for Multiple Myeloma. 
 * **Value:** Solves the **Knowledge Translation Gap**. Oncology guidelines change rapidly. This module ensures that even rural doctors without hematology specializations can offer their patients state-of-the-art, evidence-based treatment regimens for both newly diagnosed and Relapsed/Refractory (RRMM) cases.
 
+## 4. Use Case of the Proposed Agent
+The proposed AI agent is primarily intended for deployment in **Tier-2 and Tier-3 hospitals and outpatient clinics**, where access to specialized oncologists and hematologists for the diagnosis of Multiple Myeloma is often limited. In such resource-constrained settings, delayed or missed diagnoses are common due to fragmented data, time constraints, and lack of subspecialty expertise. The agent is designed to function as a **clinical decision-support copilot** that seamlessly integrates into existing physician workflows. Its effectiveness is driven by two core advantages:
 
-## 4. Technology stack and methodology
+1. **Clinically Grounded Training:** The model is trained on clinically verified, real-world datasets, enabling it to generate medically consistent risk stratification, early warning signals, and progression-aware insights rather than generic recommendations.
+2. **Edge-Friendly MOA Architecture:** The Mixture-of-Agents (MOA) design enables efficient on-device or low-resource deployment, minimizing reliance on continuous internet connectivity. This makes the system suitable for hospitals and clinics with limited computational infrastructure or intermittent network access.
 
-### 4.1 Training Methodology & Architectural Strategy
+Within these settings, the agent assists frontline clinicians by:
+- Supporting **early diagnosis** and risk stratification of Multiple Myeloma,
+- Providing **disease progression** insights from incomplete or noisy clinical records,
+- Recommending **basic, guideline-aligned clinical actions** and escalation pathways to specialists when necessary.
+
+## 5. Technology stack and methodology
+
+### 5.1 Training Methodology & Architectural Strategy
 
 Project VAJRAM employs **Parameter-Efficient Fine-Tuning (PEFT)** and **Retrieval-Augmented Generation (RAG)** to inject specialized oncological expertise into the **MedGemma 1.5** base model without compromising its foundational medical reasoning. 
 
@@ -58,7 +65,7 @@ VAJRAM is engineered specifically for resource-constrained healthcare settings. 
 As the diagnostic workflow progresses, the agent dynamically hot-swaps the specialized, lightweight **LoRA adapters** into VRAM on demand. This **frugal compute strategy** ensures that high-fidelity, privacy-preserving AI can be executed entirely on local, mid-tier hardware without requiring cloud connectivity.
 
 
-### 4.2 Datasets used for Fine-tuning, RAG, and Evaluation:
+### 5.2 Datasets used for Fine-tuning, RAG, and Evaluation:
 
 | Dataset Name | Task Type | Modality | Usage | Notes |
 | :--- | :--- | :--- | :--- | :--- |
@@ -70,7 +77,7 @@ As the diagnostic workflow progresses, the agent dynamically hot-swaps the speci
 | **MMRF CoMMpass** (IA15) | Progression Modeling / Time-Series | Tabular / Text (Clinical JSONs) | Fine-tuning & Eval | Flattened nested JSONs to extract critical survival targets like `days_to_death` (**Module 4**). |
 | **NCCN & ESMO Clinical Guidelines** | Knowledge Retrieval (RAG) | Text (Medical PDFs) | Vector Database | Embedded into a vector store to power the Guideline-Based Therapy Recommender (**Module 5**).  |
 
-### 4.3 Training Details
+### 5.3 Training Details
 
 #### Module 2: Risk Stratification & Early Detection (`lora_risk`)
 
@@ -131,24 +138,13 @@ As the diagnostic workflow progresses, the agent dynamically hot-swaps the speci
     * The final output is serialized to disk as both a native Hugging Face `DatasetDict` (for efficient batching) and readable `.jsonl` files (for manual clinical auditing).
 
 
-#### Module 5: Guideline-Based Therapy Recommender (RAG)
+## 6. Limitations and Future Work
+In its current form, **Project VAJRAM** does not incorporate comprehensive radiological analysis such as whole-body imaging, spine MRI, or other advanced modalities required to localize and characterize myeloma-affected regions—an essential component of definitive Multiple Myeloma diagnosis. Addressing this limitation will require **extending Module 3 (Vision LoRA)** to support multimodal medical imaging inputs commonly associated with myeloma assessment, thereby significantly strengthening the diagnostic capabilities of the system.
+
+Additionally, **Module 2 (Risk Stratification)** and **Module 4 (Longitudinal Reasoning)** require training on substantially larger and more diverse datasets to achieve robust generalization across varied patient populations, clinical settings, and data quality distributions. Future efforts will focus on expanding multimodal coverage, scaling dataset size, and improving generalization, with the overarching goal of evolving Project VAJRAM into a reliable clinical decision-support system that aids in early diagnosis and optimized treatment planning for a large population of Multiple Myeloma patients.
 
 
-
-
-
-## 5. UseCase and Governance
-
-
-## 6. Limitations and Future Directions
-
-
-
-## 7. Conclusion
-Project VAJRAM is not just a diagnostic tool; it is a comprehensive **Healthcare Orchestrator**. By combining the analytical power of AI with the logistical reality of patient needs (digitization and finance), it aims to democratize survival for Multiple Myeloma patients.
-
-
-## 6. References
+## 7. References
 1. Rajkumar, S. V., Dimopoulos, M. A., Palumbo, A., et al. (2014). International Myeloma Working Group updated criteria for the diagnosis of multiple myeloma. The Lancet Oncology, 15(12), e538-e548.
 2. Palumbo, A., Avet-Loiseau, H., Oliva, S., et al. (2015). Revised International Staging System for Multiple Myeloma: A Report From Intergroupe Francophone du Myelome, Oncology Wing, and Blood and Marrow Transplant Clinical Trials Network. Journal of Clinical Oncology, 33(26), 2863-2869.
 3. Katzmann, J. A., Clark, R. J., Abraham, R. S., et al. (2002). Serum reference intervals and diagnostic ranges for free kappa and free lambda light chains: relative sensitivity for detection of monoclonal light chains. Clinical Chemistry, 48(9), 1437-1444.
